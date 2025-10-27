@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A comprehensive application for Korean language learners, featuring a dictionary, translator, TOPIK vocabulary, sample conversations, pronunciation practice, and quizzes." />
+    <meta name="keywords" content="Korean, learning, language, TOPIK, dictionary, translator, vocabulary, conversation, pronunciation, practice, quiz, hangul, grammar" />
+    <meta name="author" content="Korean Learning Hub" />
+    <!-- Theme color for mobile browser UI -->
+    <meta name="theme-color" content="#f1f5f9" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
+    <title>Korean Learning Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              'hanguk-blue': {
+                '50': '#f0f7ff',
+                '100': '#e0eefe',
+                '200': '#c8e2fe',
+                '300': '#a4d2fd',
+                '400': '#7abcfb',
+                '500': '#5ba0f9',
+                '600': '#4280f5', // Main Action Color
+                '700': '#3368e7', // Hover
+                '800': '#2a54b9',
+                '900': '#274b94',
+                '950': '#1b2f5c',
+              },
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      /* Let the browser know we support dark mode for native UI elements */
+      html.dark {
+        color-scheme: dark;
+      }
+      
+      /* Improve touch experience on mobile */
+      button, a, select, [role="button"], input[type="checkbox"], input[type="radio"] {
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+      }
+
+
+      /* Custom Text Selection for better UX */
+      ::selection {
+        background-color: #5ba0f9; /* hanguk-blue-500 */
+        color: white;
+      }
+      .dark ::selection {
+        background-color: #a4d2fd; /* hanguk-blue-300 */
+        color: #1b2f5c; /* hanguk-blue-950 */
+      }
+
+      /* Custom Scrollbar for Webkit browsers */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background-color: #a4d2fd; /* hanguk-blue-300 */
+        border-radius: 10px;
+        border: 2px solid #f1f5f9; /* slate-100 */
+      }
+      .dark ::-webkit-scrollbar-thumb {
+        background-color: #274b94; /* hanguk-blue-900 */
+        border-color: #0f172a; /* slate-900 */
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background-color: #7abcfb; /* hanguk-blue-400 */
+      }
+      .dark ::-webkit-scrollbar-thumb:hover {
+        background-color: #2a54b9; /* hanguk-blue-800 */
+      }
+
+      /* Accessible Focus Ring */
+      *:focus-visible {
+        outline: 2px solid #5ba0f9 !important; /* hanguk-blue-500 */
+        outline-offset: 2px !important;
+        border-radius: 4px;
+      }
+      
+      /* --- ANIMATIONS --- */
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(15px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      @keyframes modalBackdropFadeIn {
+        from { background-color: transparent; }
+        to { background-color: rgba(0, 0, 0, 0.5); }
+      }
+      @keyframes modalContentScaleIn {
+        from { opacity: 0; transform: scale(0.95) translateY(10px); }
+        to { opacity: 1; transform: scale(1) translateY(0); }
+      }
+      @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-15px); }
+        100% { transform: translateY(0px); }
+      }
+      @keyframes fly-up-fade-out {
+        from {
+          opacity: 1;
+          transform: translateY(0) translateX(-50%);
+        }
+        to {
+          opacity: 0;
+          transform: translateY(-50px) translateX(-50%);
+        }
+      }
+
+      @keyframes line-draw-width {
+        from { width: 0; }
+      }
+      
+      /* --- HANDWRITING ANIMATION --- */
+      .handwriting-stroke {
+        /* A large value to ensure the path is hidden initially */
+        stroke-dasharray: 500;
+        stroke-dashoffset: 500;
+        animation: draw-stroke 0.8s ease-out forwards;
+      }
+      @keyframes draw-stroke {
+        to {
+          stroke-dashoffset: 0;
+        }
+      }
+      .stroke-1 { animation-delay: 0.2s; }
+      .stroke-2 { animation-delay: 0.5s; }
+      .stroke-3 { animation-delay: 0.8s; }
+      .stroke-4 { animation-delay: 1.3s; }
+      .stroke-5 { animation-delay: 1.6s; }
+      .stroke-6 { animation-delay: 1.9s; }
+
+
+      .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+      .animate-fade-in-up { animation: fadeInUp 0.5s ease-out forwards; }
+      .animate-modal-backdrop { animation: modalBackdropFadeIn 0.3s ease-out forwards; }
+      .animate-modal-content { animation: modalContentScaleIn 0.3s ease-out forwards; }
+      .animate-fly-up-fade-out { animation: fly-up-fade-out 1s ease-out forwards; }
+      
+      /* Base Transition utility */
+      .transition-all-base {
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://aistudiocdn.com/react@^19.1.1/",
+    "react": "https://aistudiocdn.com/react@^19.1.1",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.1.1/",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.21.0"
+  }
+}
+</script>
+</head>
+  <body class="bg-slate-100 dark:bg-slate-900">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>

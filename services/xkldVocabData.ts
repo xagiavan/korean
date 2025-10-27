@@ -1,0 +1,266 @@
+import type { VocabItem } from '../types';
+
+export interface XkldVocabCategory {
+  id: string;
+  name: string;
+  words: VocabItem[];
+}
+
+export const xkldVocabData: XkldVocabCategory[] = [
+  {
+    id: 'factory',
+    name: 'Tại nhà máy & Công xưởng',
+    words: [
+      {
+        word: '공장',
+        romanization: 'gongjang',
+        partOfSpeech: 'Danh từ',
+        meaning: 'nhà máy, công xưởng',
+        example_sentence: '저는 자동차 공장에서 일해요.',
+        example_translation: 'Tôi làm việc ở nhà máy ô tô.',
+      },
+      {
+        word: '기계',
+        romanization: 'gigye',
+        partOfSpeech: 'Danh từ',
+        meaning: 'máy móc',
+        example_sentence: '이 기계는 어떻게 사용해요?',
+        example_translation: 'Cái máy này sử dụng như thế nào?',
+      },
+      {
+        word: '작업복',
+        romanization: 'jageopbok',
+        partOfSpeech: 'Danh từ',
+        meaning: 'quần áo bảo hộ lao động',
+        example_sentence: '작업할 때는 항상 작업복을 입어야 합니다.',
+        example_translation: 'Khi làm việc phải luôn mặc đồ bảo hộ lao động.',
+      },
+      {
+        word: '안전모',
+        romanization: 'anjeonmo',
+        partOfSpeech: 'Danh từ',
+        meaning: 'mũ bảo hộ',
+        example_sentence: '공사 현장에서는 안전모를 꼭 쓰세요.',
+        example_translation: 'Ở công trường xây dựng, nhất định phải đội mũ bảo hộ.',
+      },
+      {
+        word: '야근',
+        romanization: 'yageun',
+        partOfSpeech: 'Danh từ',
+        meaning: 'làm thêm ca đêm, tăng ca',
+        example_sentence: '오늘 야근해야 해서 늦게 끝날 거예요.',
+        example_translation: 'Hôm nay tôi phải tăng ca nên sẽ về muộn.',
+      },
+      {
+        word: '잔업',
+        romanization: 'jan-eop',
+        partOfSpeech: 'Danh từ',
+        meaning: 'làm thêm giờ',
+        example_sentence: '이번 달은 잔업이 많아서 힘들어요.',
+        example_translation: 'Tháng này có nhiều việc làm thêm nên vất vả.',
+      },
+      {
+        word: '월급',
+        romanization: 'wolgeup',
+        partOfSpeech: 'Danh từ',
+        meaning: 'lương tháng',
+        example_sentence: '월급날이 제일 기다려져요.',
+        example_translation: 'Tôi mong chờ ngày nhận lương nhất.',
+      },
+      {
+        word: '상여금',
+        romanization: 'sang-yeogeum',
+        partOfSpeech: 'Danh từ',
+        meaning: 'tiền thưởng',
+        example_sentence: '이번에 성과가 좋아서 상여금을 받았어요.',
+        example_translation: 'Lần này vì thành tích tốt nên tôi đã nhận được tiền thưởng.',
+      },
+      {
+        word: '동료',
+        romanization: 'dongryo',
+        partOfSpeech: 'Danh từ',
+        meaning: 'đồng nghiệp',
+        example_sentence: '회사 동료들과 사이가 좋아요.',
+        example_translation: 'Tôi có quan hệ tốt với các đồng nghiệp trong công ty.',
+      },
+      {
+        word: '반장님',
+        romanization: 'banjangnim',
+        partOfSpeech: 'Danh từ',
+        meaning: 'tổ trưởng',
+        example_sentence: '모르는 것이 있으면 반장님께 물어보세요.',
+        example_translation: 'Nếu có gì không biết thì hãy hỏi tổ trưởng.',
+      },
+    ]
+  },
+  {
+    id: 'contracts',
+    name: 'Hợp đồng & Giấy tờ',
+    words: [
+      {
+        word: '근로 계약서',
+        romanization: 'geullo gyeyakseo',
+        partOfSpeech: 'Danh từ',
+        meaning: 'hợp đồng lao động',
+        example_sentence: '근로 계약서를 꼼꼼히 읽어보세요.',
+        example_translation: 'Hãy đọc kỹ hợp đồng lao động.',
+      },
+      {
+        word: '비자',
+        romanization: 'bija',
+        partOfSpeech: 'Danh từ',
+        meaning: 'visa, thị thực',
+        example_sentence: '비자 기간이 곧 만료돼요.',
+        example_translation: 'Visa của tôi sắp hết hạn.',
+      },
+      {
+        word: '외국인 등록증',
+        romanization: 'oegugin deungnokjeung',
+        partOfSpeech: 'Danh từ',
+        meaning: 'thẻ đăng ký người nước ngoài',
+        example_sentence: '외국인 등록증은 항상 가지고 다녀야 해요.',
+        example_translation: 'Phải luôn mang theo thẻ đăng ký người nước ngoài bên mình.',
+      },
+      {
+        word: '여권',
+        romanization: 'yeogwon',
+        partOfSpeech: 'Danh từ',
+        meaning: 'hộ chiếu',
+        example_sentence: '공항에 갈 때 여권을 잊지 마세요.',
+        example_translation: 'Đừng quên hộ chiếu khi ra sân bay.',
+      },
+      {
+        word: '갱신하다',
+        romanization: 'gaengsinhada',
+        partOfSpeech: 'Động từ',
+        meaning: 'gia hạn',
+        example_sentence: '비자를 갱신하러 출입국관리사무소에 가야 해요.',
+        example_translation: 'Tôi phải đến văn phòng quản lý xuất nhập cảnh để gia hạn visa.',
+      },
+      {
+        word: '만료되다',
+        romanization: 'mallyodoeda',
+        partOfSpeech: 'Động từ',
+        meaning: 'hết hạn',
+        example_sentence: '계약 기간이 다음 달에 만료됩니다.',
+        example_translation: 'Thời hạn hợp đồng sẽ hết hạn vào tháng sau.',
+      },
+      {
+        word: '서명하다',
+        romanization: 'seomyeonghada',
+        partOfSpeech: 'Động từ',
+        meaning: 'ký tên',
+        example_sentence: '계약서의 모든 내용을 확인하고 서명하세요.',
+        example_translation: 'Hãy kiểm tra mọi nội dung của hợp đồng và ký tên.',
+      },
+    ]
+  },
+  {
+    id: 'safety',
+    name: 'An toàn Lao động',
+    words: [
+       {
+        word: '안전 제일',
+        romanization: 'anjeon jeil',
+        partOfSpeech: 'Cụm từ',
+        meaning: 'an toàn là trên hết',
+        example_sentence: '모든 작업에서 안전 제일을 기억해야 합니다.',
+        example_translation: 'Trong mọi công việc, phải ghi nhớ an toàn là trên hết.',
+      },
+      {
+        word: '위험',
+        romanization: 'wiheom',
+        partOfSpeech: 'Danh từ',
+        meaning: 'nguy hiểm',
+        example_sentence: '이 기계는 위험하니까 조심하세요.',
+        example_translation: 'Cái máy này nguy hiểm nên hãy cẩn thận.',
+      },
+       {
+        word: '사고',
+        romanization: 'sago',
+        partOfSpeech: 'Danh từ',
+        meaning: 'tai nạn',
+        example_sentence: '작업 중에 사고가 나지 않도록 주의하세요.',
+        example_translation: 'Hãy chú ý để không xảy ra tai nạn trong lúc làm việc.',
+      },
+      {
+        word: '보호구',
+        romanization: 'bohogu',
+        partOfSpeech: 'Danh từ',
+        meaning: 'đồ bảo hộ',
+        example_sentence: '안전한 작업을 위해 보호구를 착용해야 합니다.',
+        example_translation: 'Phải mặc đồ bảo hộ để làm việc an toàn.',
+      },
+      {
+        word: '소화기',
+        romanization: 'sohwagi',
+        partOfSpeech: 'Danh từ',
+        meaning: 'bình chữa cháy',
+        example_sentence: '소화기는 어디에 있는지 확인해 두세요.',
+        example_translation: 'Hãy kiểm tra xem bình chữa cháy ở đâu.',
+      },
+      {
+        word: '응급 처치',
+        romanization: 'eunggeup cheochi',
+        partOfSpeech: 'Danh từ',
+        meaning: 'sơ cứu',
+        example_sentence: '다쳤을 때를 대비해 응급 처치 방법을 알아두는 것이 좋아요.',
+        example_translation: 'Biết cách sơ cứu để phòng khi bị thương là một điều tốt.',
+      },
+    ]
+  },
+  {
+    id: 'health',
+    name: 'Sức khỏe & Bảo hiểm',
+    words: [
+       {
+        word: '병원',
+        romanization: 'byeong-won',
+        partOfSpeech: 'Danh từ',
+        meaning: 'bệnh viện',
+        example_sentence: '몸이 안 좋으면 병원에 가세요.',
+        example_translation: 'Nếu trong người không khỏe thì hãy đến bệnh viện.',
+      },
+      {
+        word: '약국',
+        romanization: 'yakguk',
+        partOfSpeech: 'Danh từ',
+        meaning: 'hiệu thuốc',
+        example_sentence: '병원에 갔다가 약국에 들러서 약을 샀어요.',
+        example_translation: 'Sau khi đi bệnh viện, tôi đã ghé hiệu thuốc để mua thuốc.',
+      },
+       {
+        word: '건강 보험',
+        romanization: 'geongang boheom',
+        partOfSpeech: 'Danh từ',
+        meaning: 'bảo hiểm y tế',
+        example_sentence: '외국인 근로자도 건강 보험에 가입해야 합니다.',
+        example_translation: 'Người lao động nước ngoài cũng phải tham gia bảo hiểm y tế.',
+      },
+       {
+        word: '산재 보험',
+        romanization: 'sanjae boheom',
+        partOfSpeech: 'Danh từ',
+        meaning: 'bảo hiểm tai nạn lao động',
+        example_sentence: '일하다가 다치면 산재 보험 처리를 받을 수 있어요.',
+        example_translation: 'Nếu bị thương trong lúc làm việc, bạn có thể nhận xử lý bảo hiểm tai nạn lao động.',
+      },
+       {
+        word: '아프다',
+        romanization: 'apeuda',
+        partOfSpeech: 'Tính từ',
+        meaning: 'đau, ốm',
+        example_sentence: '머리가 너무 아파요.',
+        example_translation: 'Tôi đau đầu quá.',
+      },
+       {
+        word: '휴식',
+        romanization: 'hyusik',
+        partOfSpeech: 'Danh từ',
+        meaning: 'nghỉ ngơi',
+        example_sentence: '피곤할 때는 충분한 휴식이 필요해요.',
+        example_translation: 'Khi mệt mỏi, cần phải nghỉ ngơi đầy đủ.',
+      },
+    ]
+  }
+];

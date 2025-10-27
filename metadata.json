@@ -1,0 +1,8 @@
+{
+  "name": "Korean Learning Hub",
+  "description": "A comprehensive application for Korean language learners, featuring a dictionary, translator, TOPIK vocabulary, sample conversations, pronunciation practice, and quizzes.",
+  "requestFramePermissions": [
+    "microphone",
+    "camera"
+  ]
+}
