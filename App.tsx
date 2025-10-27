@@ -8,7 +8,7 @@ import AuthPage from './components/AuthPage';
 import SuspenseLoader from './components/SuspenseLoader';
 import GamificationHeader from './components/GamificationHeader';
 import HeaderStats from './components/HeaderStats';
-import type { Feature, AppFeatureProps, AppSettings, LearningLevel } from './types';
+import type { Feature, AppFeatureProps, AppSettings, LearningLevel, UserProfile } from './types';
 import { 
     AppLogo, DictionaryIcon, TranslateIcon, VocabIcon, SRSIcon, 
     ConversationIcon, PronunciationIcon, HandwritingIcon, QuizIcon, AcademicCapIcon,
@@ -177,6 +177,9 @@ const MainApp: React.FC = () => {
     const [featurePayload, setFeaturePayload] = useState<any>(null);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [showOnboarding, setShowOnboarding] = useState(false);
+    
+    const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+    const [isProfileLoading, setIsProfileLoading] = useState(true);
 
     const [settings, setSettings] = useState<AppSettings>({
         theme: 'system',
@@ -184,21 +187,44 @@ const MainApp: React.FC = () => {
         fontSize: 'base'
     });
     const [settingsLoaded, setSettingsLoaded] = useState(false);
-    const [userProfile, setUserProfile] = useState<{level: LearningLevel | null} | null>(null);
 
     useEffect(() => {
-        const loadInitialData = async () => {
+        const loadProfile = async () => {
             if (currentUser?.email) {
-                const [savedSettings, profile] = await Promise.all([
-                    apiClient.get<Partial<AppSettings>>('/api/data/user-settings'),
-                    apiClient.get<{level: LearningLevel | null}>('/api/data/user-profile')
-                ]);
+                setIsProfileLoading(true);
+                try {
+                    const profileData = await apiClient.get<UserProfile>('/api/data/user-profile');
+                    if (profileData && typeof profileData.level !== 'undefined') {
+                        setUserProfile(profileData);
+                    } else {
+                        const defaultProfile = { level: 'beginner' as LearningLevel };
+                        setUserProfile(defaultProfile);
+                        await apiClient.post('/api/data/user-profile', defaultProfile);
+                    }
+                } catch (e) {
+                    const defaultProfile = { level: 'beginner' as LearningLevel };
+                    setUserProfile(defaultProfile);
+                    await apiClient.post('/api/data/user-profile', defaultProfile);
+                } finally {
+                    setIsProfileLoading(false);
+                }
+            } else {
+                setUserProfile(null);
+                setIsProfileLoading(false);
+            }
+        };
+        loadProfile();
+    }, [currentUser]);
+
+    useEffect(() => {
+        const loadSettings = async () => {
+            if (currentUser?.email) {
+                const savedSettings = await apiClient.get<Partial<AppSettings>>('/api/data/user-settings');
                 setSettings(s => ({ ...s, ...savedSettings }));
-                setUserProfile(profile || { level: null });
             }
             setSettingsLoaded(true);
         };
-        loadInitialData();
+        loadSettings();
     }, [currentUser]);
 
     useEffect(() => {
@@ -227,10 +253,10 @@ const MainApp: React.FC = () => {
 
 
     useEffect(() => {
-        if (!loading && currentUser && activeFeature === 'landing') {
-            setActiveFeature('history');
+        if (!loading && currentUser && userProfile?.level !== null && activeFeature === 'landing') {
+            setActiveFeature('plan');
         }
-    }, [currentUser, loading, activeFeature]);
+    }, [currentUser, loading, activeFeature, userProfile]);
 
     useEffect(() => {
         const checkOnboarding = async () => {
@@ -249,6 +275,13 @@ const MainApp: React.FC = () => {
         setShowOnboarding(false);
         await apiClient.post('/api/data/onboarding', true);
     }, [currentUser]);
+    
+    const handlePlacementTestComplete = useCallback(async (level: LearningLevel) => {
+        const newProfile = { level };
+        setUserProfile(newProfile);
+        await apiClient.post('/api/data/user-profile', newProfile);
+        setActiveFeature('plan');
+    }, []);
 
     const handleSetActiveFeature = useCallback((feature: Feature, payload: any = null) => {
         setActiveFeature(feature);
@@ -274,22 +307,23 @@ const MainApp: React.FC = () => {
     }, [handleSetActiveFeature]);
 
     const handleLoginSuccess = useCallback(() => {
-        // After login, profile will be fetched which might trigger placement test
+        // This is called from AuthPage. The useEffects that watch `currentUser` will handle the logic.
     }, []);
 
     const handleGetStarted = useCallback(() => {
         setActiveFeature('plan');
     }, []);
-
-    const handleTestComplete = useCallback(async (level: LearningLevel) => {
-        if (!currentUser?.email) return;
-        const newProfile = { level };
-        setUserProfile(newProfile);
-        await apiClient.post('/api/data/user-profile', newProfile);
-    }, [currentUser]);
-
-    if (loading || !settingsLoaded || (currentUser && !userProfile)) {
+    
+    if (loading || !settingsLoaded || isProfileLoading) {
         return <div className="w-screen h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900"><SuspenseLoader /></div>;
+    }
+
+    if (currentUser && !isProfileLoading && userProfile?.level === null) {
+        return (
+            <Suspense fallback={<div className="w-screen h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900"><SuspenseLoader /></div>}>
+                <PlacementTest onComplete={handlePlacementTestComplete} />
+            </Suspense>
+        );
     }
 
     if (activeFeature === 'landing' && !currentUser) {
@@ -304,14 +338,6 @@ const MainApp: React.FC = () => {
         return <AuthPage onSuccess={handleLoginSuccess} />;
     }
     
-    if (userProfile && !userProfile.level) {
-        return (
-            <Suspense fallback={<div className="w-screen h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900"><SuspenseLoader /></div>}>
-                <PlacementTest onComplete={handleTestComplete} />
-            </Suspense>
-        );
-    }
-
     const ActiveComponent = features.find(f => f.id === activeFeature)?.component 
         || (activeFeature === 'settings' ? Settings 
         : activeFeature === 'upgrade' ? UpgradePage

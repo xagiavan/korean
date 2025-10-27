@@ -14,6 +14,7 @@ import FeatureHeader from './FeatureHeader';
 import Loader from './Loader';
 import { useToast } from '../contexts/ToastContext';
 import { UserIcon, UpgradeIcon, XCircleIcon } from './icons/Icons';
+import { useAuth } from '../contexts/AuthContext';
 
 interface UserWithStats extends User {
     stats: GamificationState;
@@ -37,6 +38,7 @@ const StatCard: React.FC<{ title: string; value: string | number; icon: React.Re
 
 const AdminPanel: React.FC = () => {
     const { addToast } = useToast();
+    const { currentUser } = useAuth();
     const [users, setUsers] = useState<UserWithStats[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isUpdating, setIsUpdating] = useState<string | null>(null);
@@ -105,8 +107,8 @@ const AdminPanel: React.FC = () => {
             // In this mock, we can't delete other users' data, so we'll just simulate it.
             console.log(`[ADMIN MOCK] Resetting all data for ${email}`);
             
+            // FIX: Replaced non-existent authService.getCurrentUser() with currentUser from useAuth hook.
             // For the current user, we can actually delete it.
-            const currentUser = await authService.getCurrentUser();
             if (currentUser?.email === email) {
                 await gamificationService.deleteUserState();
                 await srsService.deleteUserDeck();

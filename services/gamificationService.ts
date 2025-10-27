@@ -67,7 +67,7 @@ export const getGamificationState = async (): Promise<GamificationState> => {
         }
         return state;
     } catch (e) {
-        console.error("Failed to get gamification state", e);
+        // If it fails (e.g., new user), return the initial state
         return getInitialState();
     }
 };
@@ -85,11 +85,15 @@ const saveGamificationState = async (state: GamificationState): Promise<Gamifica
 
 const checkAllBadges = async (state: GamificationState): Promise<Badge[]> => {
     const newlyUnlocked: Badge[] = [];
+    
+    // Some checks require async calls, so we do them here
+    const srsDeckSize = await srsService.getDeckSize();
+
     // Badge thresholds
-    const badgeChecks = {
-        'srs-1': (await srsService.getDeck()).length >= 10,
-        'srs-2': (await srsService.getDeck()).length >= 50,
-        'srs-3': (await srsService.getDeck()).length >= 100,
+    const badgeChecks: Record<string, boolean> = {
+        'srs-1': srsDeckSize >= 10,
+        'srs-2': srsDeckSize >= 50,
+        'srs-3': srsDeckSize >= 100,
         'streak-1': state.streak >= 3,
         'streak-2': state.streak >= 7,
         'streak-3': state.streak >= 30,
@@ -102,8 +106,7 @@ const checkAllBadges = async (state: GamificationState): Promise<Badge[]> => {
     };
 
     for (const badge of allBadges) {
-        // @ts-ignore
-        if (!state.unlockedBadgeIds.includes(badge.id) && badgeChecks[badge.id]) {
+        if (badgeChecks[badge.id] && !state.unlockedBadgeIds.includes(badge.id)) {
             state.unlockedBadgeIds.push(badge.id);
             newlyUnlocked.push({ ...badge, isUnlocked: true });
         }
@@ -123,7 +126,15 @@ export const addXp = async (amount: number): Promise<{ newBadges: Badge[] }> => 
     
     const today = new Date().toISOString().slice(0, 10);
     if (state.lastActivityDate !== today) {
-        state.streak += 1; // Streak logic is simplified in getGamificationState, just increment on new day activity
+        // Streak is updated if the last activity was yesterday
+        const lastActivity = new Date(state.lastActivityDate);
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        if (lastActivity.toISOString().slice(0, 10) === yesterday.toISOString().slice(0, 10)) {
+             state.streak += 1;
+        } else {
+            state.streak = 1; // Start a new streak
+        }
         state.lastActivityDate = today;
     }
     
@@ -144,7 +155,6 @@ export const recordDictionaryLookup = async (word: string): Promise<Badge[]> => 
     return newBadges;
 };
 
-// ... other record functions similarly refactored to be async ...
 export const recordRolePlayCompletion = async (scenarioId: string): Promise<Badge[]> => {
     const state = await getGamificationState();
     if (!state.completedRolePlays) state.completedRolePlays = [];
@@ -164,8 +174,6 @@ export const recordQuizCompletion = async (): Promise<Badge[]> => {
     return newBadges;
 };
 
-
-// Other services will follow a similar async pattern
 export const getProfileDisplayBadges = async (): Promise<Badge[]> => {
     const state = await getGamificationState();
     return allBadges.map(badgeDef => ({
@@ -178,8 +186,6 @@ export const deleteUserState = (): Promise<void> => {
     return apiClient.delete(API_ENDPOINT);
 };
 
-
-// --- Functions to be refactored similarly ---
 export const recordConversationCreation = async (): Promise<Badge[]> => {
     const state = await getGamificationState();
     state.createdConversationsCount = (state.createdConversationsCount || 0) + 1;
@@ -221,7 +227,9 @@ export const recordGrammarQuizAttempt = async (categoryId: string) => {
 export const checkSrsBadges = async (): Promise<Badge[]> => {
     const state = await getGamificationState();
     const newBadges = await checkAllBadges(state);
-    await saveGamificationState(state);
+    if(newBadges.length > 0) {
+        await saveGamificationState(state);
+    }
     return newBadges;
 };
 
@@ -251,7 +259,6 @@ export const recordQuestCompletion = async (questId: string) => {
     }
 };
 
-
 // --- Competition / Leaderboard Functions (mocked) ---
 
 export const getLeaderboardData = (currentUserEmail: string, currentUserXp: number): LeaderboardUser[] => {
@@ -259,7 +266,7 @@ export const getLeaderboardData = (currentUserEmail: string, currentUserXp: numb
     const mockNames = ["Minjun", "Seojun", "Doyoon", "Siwoo", "Joo-won", "Ye-jun", "Seo-yeon", "Ji-woo", "Seo-hyun", "Ha-yoon"];
     const users: Omit<LeaderboardUser, 'rank'>[] = [];
     const currentUserDisplayName = currentUserEmail.split('@')[0];
-    users.push({ name: currentUserDisplayName, xp: currentUserXp, isCurrentUser: true });
+    users.push({ name: `${currentUserDisplayName} (Bạn)`, xp: currentUserXp, isCurrentUser: true });
 
     for (let i = 0; i < 29; i++) {
         const xp = Math.max(0, currentUserXp + Math.floor((Math.random() - 0.45) * 500));
