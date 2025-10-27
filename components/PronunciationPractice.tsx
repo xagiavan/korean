@@ -293,4 +293,127 @@ const PronunciationPractice: React.FC<AppFeatureProps> = ({ setActiveFeature }) 
   const renderShadowingModeControls = () => (
     <div className="flex flex-col items-center">
         {shadowingState === 'idle' || shadowingState === 'feedback' ? (
-             <button onClick={handleStartShadowing} disabled={permissionError || !currentItemToPractice} className="px-6 py-3 bg-hanguk-blue-600 text-white font-bold rounded-lg shadow-md hover:
+             <button onClick={handleStartShadowing} disabled={permissionError || !currentItemToPractice} className="px-6 py-3 bg-hanguk-blue-600 text-white font-bold rounded-lg shadow-md hover:bg-hanguk-blue-700">
+                <PlayCircleIcon className="inline w-5 h-5 mr-2"/>
+                Bắt đầu Shadowing
+             </button>
+        ) : shadowingState === 'playing' ? (
+            <div className="text-center">
+                <p className="font-semibold text-slate-500 animate-pulse">Lắng nghe...</p>
+            </div>
+        ) : shadowingState === 'recording' ? (
+            <div className="text-center">
+                <p className="font-semibold text-red-500 animate-pulse">Nói theo!</p>
+            </div>
+        ) : ( // evaluating
+            <div className="flex items-center gap-2 font-semibold text-slate-500">
+                <Loader size="sm" inline />
+                <span>Đang đánh giá...</span>
+            </div>
+        )}
+    </div>
+  );
+
+   const renderShadowingFeedback = () => shadowingReport && (
+    <div className="mt-6 p-4 bg-slate-100 dark:bg-slate-900/50 rounded-lg animate-fade-in-up space-y-4">
+        <h4 className="font-bold text-lg text-center">Báo cáo Shadowing</h4>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="flex flex-col items-center">
+                <CircularProgress score={shadowingReport.overallScore} />
+                <p className="font-bold mt-2">Tổng thể</p>
+                <p className="text-sm text-center text-slate-600 dark:text-slate-300">{shadowingReport.overallFeedback}</p>
+            </div>
+            <div className="space-y-3 text-sm">
+                <div>
+                    <p className="font-semibold">Phát âm: <span className="font-bold text-blue-500">{shadowingReport.pronunciationScore}/100</span></p>
+                    <p>{shadowingReport.pronunciationFeedback}</p>
+                </div>
+                <div>
+                    <p className="font-semibold">Nhịp điệu: <span className="font-bold text-blue-500">{shadowingReport.rhythmScore}/100</span></p>
+                    <p>{shadowingReport.rhythmFeedback}</p>
+                </div>
+                <div>
+                    <p className="font-semibold">Ngữ điệu: <span className="font-bold text-blue-500">{shadowingReport.intonationScore}/100</span></p>
+                    <p>{shadowingReport.intonationFeedback}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+  );
+  
+  return (
+    <div className="max-w-4xl mx-auto">
+        <FeatureHeader
+            title="Luyện phát âm"
+            description="Nghe và lặp lại các câu, chữ cái, hoặc từ vựng để cải thiện phát âm của bạn với sự trợ giúp của AI."
+        />
+
+        <div className="mb-6 border-b-2 border-slate-200 dark:border-slate-700">
+            <button onClick={() => handlePracticeTypeChange('phrases')} className={`px-4 py-2 font-semibold text-sm transition-colors ${practiceType === 'phrases' ? 'border-b-2 border-hanguk-blue-600 text-hanguk-blue-600 dark:text-hanguk-blue-300' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700'}`}>
+                Cụm từ
+            </button>
+            <button onClick={() => handlePracticeTypeChange('hangeul')} className={`px-4 py-2 font-semibold text-sm transition-colors ${practiceType === 'hangeul' ? 'border-b-2 border-hanguk-blue-600 text-hanguk-blue-600 dark:text-hanguk-blue-300' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700'}`}>
+                Bảng chữ cái
+            </button>
+            <button onClick={() => handlePracticeTypeChange('srs')} className={`px-4 py-2 font-semibold text-sm transition-colors ${practiceType === 'srs' ? 'border-b-2 border-hanguk-blue-600 text-hanguk-blue-600 dark:text-hanguk-blue-300' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700'}`}>
+                Từ vựng SRS
+            </button>
+        </div>
+
+        {practiceType === 'phrases' && (
+            <div className="mb-4">
+                <select value={selectedContextKey} onChange={e => setSelectedContextKey(e.target.value)} className="w-full p-2 rounded-md bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600">
+                    {contextKeys.map(key => <option key={key} value={key}>{pronunciationContexts[key].label}</option>)}
+                </select>
+            </div>
+        )}
+        {practiceType === 'hangeul' && (
+             <div className="mb-4">
+                <select value={hangeulGroupIndex} onChange={e => setHangeulGroupIndex(Number(e.target.value))} className="w-full p-2 rounded-md bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600">
+                    {hangeulData.map((group, index) => <option key={index} value={index}>{group.title}</option>)}
+                </select>
+            </div>
+        )}
+        {practiceType === 'srs' && srsDeck.length === 0 && (
+            <div className="text-center p-4 bg-slate-100 rounded-lg">
+                <p>Không có từ nào trong bộ ôn tập SRS của bạn. Hãy thêm từ vựng để luyện tập!</p>
+            </div>
+        )}
+        
+        <div className="bg-white dark:bg-slate-800 p-8 rounded-lg shadow-md text-center min-h-[20rem]">
+            {currentItemToPractice ? (
+                <>
+                    <p className="text-3xl sm:text-4xl font-bold">{currentItemToPractice.korean}</p>
+                    <p className="text-lg text-slate-500 dark:text-slate-400 italic mb-8">{currentItemToPractice.romanization}</p>
+
+                    <div className="mb-6 flex justify-center gap-1 p-1 bg-slate-200 dark:bg-slate-700 rounded-lg">
+                        <button onClick={() => setMode('practice')} className={`w-1/2 px-4 py-1.5 rounded-md font-semibold text-sm transition-colors ${mode === 'practice' ? 'bg-white dark:bg-slate-800 text-hanguk-blue-600 shadow' : 'text-slate-600 dark:text-slate-300'}`}>
+                            Luyện tập
+                        </button>
+                        <button onClick={() => setMode('shadowing')} className={`w-1/2 px-4 py-1.5 rounded-md font-semibold text-sm transition-colors ${mode === 'shadowing' ? 'bg-white dark:bg-slate-800 text-hanguk-blue-600 shadow' : 'text-slate-600 dark:text-slate-300'}`}>
+                            Shadowing
+                        </button>
+                    </div>
+
+                    {mode === 'practice' ? renderPracticeModeControls() : renderShadowingModeControls()}
+
+                    <div className="mt-4 flex justify-center">
+                         <button onClick={nextItem} className="flex items-center gap-2 px-4 py-2 bg-slate-200 dark:bg-slate-600 font-semibold rounded-lg text-sm hover:bg-slate-300 dark:hover:bg-slate-700">
+                            Tiếp theo
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                        </button>
+                    </div>
+
+                    {mode === 'practice' ? renderPracticeFeedback() : renderShadowingFeedback()}
+                </>
+            ) : (
+                <p>Chọn một danh mục để bắt đầu.</p>
+            )}
+
+            {permissionError && <p className="mt-4 text-red-500 text-sm">Quyền truy cập micro đã bị từ chối. Vui lòng cấp quyền trong cài đặt trình duyệt và tải lại trang.</p>}
+        </div>
+    </div>
+  );
+};
+
+export default PronunciationPractice;
