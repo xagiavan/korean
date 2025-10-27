@@ -6,7 +6,7 @@ import { analyzeGrammar, analyzeMediaTranscript } from '../services/geminiServic
 import type { MediaContent, LyricLine, GrammarComponent, MediaAnalysisResult, VocabItem, AppFeatureProps, Badge } from '../types';
 import { PlayIcon, PauseIcon, CloseIcon, SpeakerIcon, PlusIcon, SparklesIcon, BookOpenIcon, AcademicCapIcon, CheckIcon } from './icons/Icons';
 import { useAuth } from '../contexts/AuthContext';
-import AdminUploadModal from './components/AdminUploadModal';
+import AdminUploadModal from './AdminUploadModal';
 import * as gamificationService from '../services/gamificationService';
 import * as playbackPositionService from '../services/playbackPositionService';
 import { useSelectionPopover } from '../contexts/SelectionPopoverContext';
