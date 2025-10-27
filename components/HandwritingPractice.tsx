@@ -281,4 +281,21 @@ const HandwritingPractice: React.FC = () => {
                                 </div>
                                 <div className="flex-grow space-y-3 text-sm">
                                     <div className="p-3 bg-green-100 dark:bg-green-900/50 rounded-md">
-                                        <p className="font-semibold text-
+                                        <p className="font-semibold text-green-800 dark:text-green-300">Điểm tốt:</p>
+                                        <p>{feedback.positiveFeedback}</p>
+                                    </div>
+                                    <div className="p-3 bg-yellow-100 dark:bg-yellow-900/50 rounded-md">
+                                        <p className="font-semibold text-yellow-800 dark:text-yellow-300">Góp ý:</p>
+                                        <p>{feedback.improvementTip}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default HandwritingPractice;
