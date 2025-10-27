@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import FeatureHeader from './FeatureHeader';
-import { useToast } from './contexts/ToastContext';
+import { useToast } from '../contexts/ToastContext';
 import { useAuth } from '../contexts/AuthContext';
 import * as journalService from '../services/journalService';
 import * as gamificationService from '../services/gamificationService';
